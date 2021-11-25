@@ -1,7 +1,8 @@
 import github from "./db.js";
-import { useEffect } from "react";
+import { useEffect,useState } from "react";
 
 function App() {
+  let [userName, setUserName] = useState("");
   useEffect(() => {
     const githubQuery = {
       query: `
@@ -20,6 +21,7 @@ function App() {
     })
       .then((response) => response.json())
       .then((data) => {
+        setUserName(data.data.viewer.name);
         console.log(data);
       })
       .catch((err) => {
@@ -31,6 +33,7 @@ function App() {
       <h1 className="text-primary">
         <i className="bi bi-diagram-2-fill">Repos</i>
       </h1>
+      <p>Hey there {userName}</p>
     </div>
   );
 }
