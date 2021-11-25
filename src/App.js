@@ -1,11 +1,10 @@
 import github from "./db.js";
-import { useEffect,useState } from "react";
-import query from './Query';
+import { useEffect, useState, useCallback } from "react";
+import query from "./Query";
 function App() {
   let [userName, setUserName] = useState("");
-  useEffect(() => {
- 
 
+  const fetchData = useCallback(() => {
     fetch(github.baseURL, {
       method: "POST",
       headers: github.headers,
@@ -19,7 +18,10 @@ function App() {
       .catch((err) => {
         console.log(err);
       });
-  });
+  }, []);
+  useEffect(() => {
+    fetchData();
+  },[fetchData]);
   return (
     <div className="App container mt-5">
       <h1 className="text-primary">
