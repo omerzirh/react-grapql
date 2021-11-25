@@ -3,6 +3,7 @@ import { useEffect, useState, useCallback } from "react";
 import query from "./Query";
 import RepoInfo from './RepoInfo';
 import SearchBox from "./SearchBox.js";
+import NavButtons from "./NavButtons.js";
 function App() {
   let [userName, setUserName] = useState("");
   let [repoList, setRepoList] = useState(null);
@@ -60,6 +61,10 @@ function App() {
       <p>
         <b>Search for: </b> {queryString} |   <b>Item per page: </b> {pageCount} | <b>Total Results: </b> {totalCount}
       </p>
+      <NavButtons start={startCursor} end={endCursor} next={hasNextPage} previous={hasPreviousPage} onPage={(myKeyword, myString)=>{
+        setPaginationKeyword(myKeyword);
+        setPaginationString(myString);
+      } }/>
       {repoList && (
         <ul className="list-group list-group-flush">
           {repoList.map((repo) => (
