@@ -2,11 +2,12 @@ import github from "./db.js";
 import { useEffect, useState, useCallback } from "react";
 import query from "./Query";
 import RepoInfo from './RepoInfo';
+import SearchBox from "./SearchBox.js";
 function App() {
   let [userName, setUserName] = useState("");
   let [repoList, setRepoList] = useState(null);
   let [pageCount, setPageCount] = useState("10");
-  let [queryString, setQueryString] = useState("das");
+  let [queryString, setQueryString] = useState("");
   let [totalCount, setTotalCount] = useState(null);
 
   const fetchData = useCallback(() => {
@@ -39,6 +40,7 @@ function App() {
         <i className="bi bi-diagram-2-fill">Repos</i>
       </h1>
       <p>Hey there {userName}</p>
+      <SearchBox totalCount={totalCount} pageCount={pageCount} queryString={queryString} onQueryChange={(myString)=>{setQueryString(myString)}} onTotalChange={(myNumber)=>{setPageCount(myNumber)}}/>
       <p>
         <b>Search for: </b> {queryString} |   <b>Item per page: </b> {pageCount} | <b>Total Results: </b> {totalCount}
       </p>
