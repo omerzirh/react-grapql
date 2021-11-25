@@ -9,9 +9,15 @@ function App() {
   let [pageCount, setPageCount] = useState("10");
   let [queryString, setQueryString] = useState("");
   let [totalCount, setTotalCount] = useState(null);
+  let [startCursor, setStartCursor] = useState(null);
+  let [endCursor, setEndCursor] = useState(null);
+  let [hasPreviousPage, setHasPreviousPage] = useState(false);
+  let [hasNextPage, setHasNextPage] = useState(true);
+  let [paginationKeyword, setPaginationKeyword] = useState("first");
+  let [paginationString, setPaginationString] = useState("")
 
   const fetchData = useCallback(() => {
-    const queryText = JSON.stringify(query(pageCount, queryString));
+    const queryText = JSON.stringify(query(pageCount, queryString,paginationKeyword,paginationString));
     fetch(github.baseURL, {
       method: "POST",
       headers: github.headers,
@@ -21,16 +27,26 @@ function App() {
       .then((data) => {
         console.log(data)
         const viewer = data.data.viewer;
-        const repos = data.data.search.nodes;
+        const repos = data.data.search.edges;
         const total = data.data.search.repositoryCount;
+        const start = data.data.search.pageInfo?.startCursor;
+        const end = data.data.search.pageInfo?.endCursor;
+        const next = data.data.search.pageInfo?.hasNextPage;
+        const prev= data.data.search.pageInfo?.hasPreviousPage;
+
         setUserName(viewer.name);
         setRepoList(repos);
-        setTotalCount(total)
+        setTotalCount(total);
+
+        setStartCursor(start);
+        setEndCursor(end);
+        setHasNextPage(next);
+        setHasPreviousPage(prev);
       })
       .catch((err) => {
         console.log(err);
       });
-  }, [pageCount, queryString]);
+  }, [pageCount, queryString, paginationString, paginationKeyword]);
   useEffect(() => {
     fetchData();
   }, [fetchData]);
@@ -47,7 +63,7 @@ function App() {
       {repoList && (
         <ul className="list-group list-group-flush">
           {repoList.map((repo) => (
-           <RepoInfo key={repo.id} repo={repo}/>
+           <RepoInfo key={repo.node.id} repo={repo.node}/>
       ))}
         </ul>
       )}
